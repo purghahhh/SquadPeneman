@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<title>Hantar Permintaan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{margin:0;font-family:system-ui;background:#f4f6fb;}
+.container{max-width:600px;margin:auto;padding:20px;}
+.card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+input,textarea{
+  width:100%;padding:10px;margin-top:8px;margin-bottom:14px;
+  border-radius:8px;border:1px solid #d1d5db;
+}
+button{
+  width:100%;padding:12px;border:none;border-radius:10px;
+  background:#16a34a;color:white;font-size:1rem;cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="card">
+<h2>Maklumat Permintaan</h2>
+
+<div id="chosen"></div>
+
+<label>Nama Pemohon</label>
+<input id="name">
+
+<label>No Telefon</label>
+<input id="phone">
+
+<label>Destinasi</label>
+<input id="place">
+
+<label>Catatan</label>
+<textarea id="note"></textarea>
+
+<button onclick="submitForm()">Hantar Permintaan</button>
+</div>
+</div>
+
+<script>
+const data={
+1:"Aisyah Ahmad",
+2:"Muhammad Hakim",
+3:"Nurul Iman",
+4:"Syafiq",
+5:"Siti Mariam"
+};
+
+const selected=JSON.parse(localStorage.getItem("selected")||"[]");
+const div=document.getElementById("chosen");
+div.innerHTML="<strong>Pengiring dipilih:</strong><br>"+selected.map(id=>data[id]).join("<br>");
+
+function submitForm(){
+const name=document.getElementById("name").value;
+const phone=document.getElementById("phone").value;
+const place=document.getElementById("place").value;
+const note=document.getElementById("note").value;
+
+const pengiring=selected.map(id=>data[id]).join(", ");
+
+const formURL="https://docs.google.com/forms/d/e/FORM_ID/viewform"
++"?entry.111="+encodeURIComponent(name)
++"&entry.222="+encodeURIComponent(phone)
++"&entry.333="+encodeURIComponent(place)
++"&entry.444="+encodeURIComponent(pengiring)
++"&entry.555="+encodeURIComponent(note);
+
+window.location.href=formURL;
+}
+</script>
+
+</body>
+</html>
