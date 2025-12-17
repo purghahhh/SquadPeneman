@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<title>Pilih Pengiring IPG</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:#f4f6fb;
+}
+header{
+  background:#fff;
+  padding:20px;
+  box-shadow:0 2px 6px rgba(0,0,0,.05);
+}
+.container{max-width:1100px;margin:auto;padding:20px;}
+.grid{display:grid;grid-template-columns:1fr 300px;gap:20px;}
+.card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.06);}
+.profile{display:flex;gap:12px;border:1px solid #e5e7eb;padding:10px;border-radius:10px;margin-bottom:12px;}
+.profile img{width:55px;height:55px;border-radius:50%;object-fit:cover;}
+.profile h3{margin:0;font-size:1rem;}
+.profile p{margin:4px 0;font-size:.85rem;color:#6b7280;}
+.profile button{margin-left:auto;padding:8px;border:none;border-radius:8px;cursor:pointer;}
+.selected li{display:flex;justify-content:space-between;margin-bottom:6px;}
+.selected button{background:#fee2e2;border:none;border-radius:6px;cursor:pointer;}
+.next-btn{
+  width:100%;padding:10px;border:none;border-radius:10px;
+  background:#2563eb;color:#fff;font-size:.95rem;cursor:pointer;
+}
+.next-btn:disabled{background:#9ca3af;}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>Pilih Pengiring IPG</h2>
+<p>Pilih minimum 3, maksimum 5 orang</p>
+</header>
+
+<div class="container">
+<div class="grid">
+
+<div class="card">
+<h3>Profil Pelajar</h3>
+<div id="profiles"></div>
+</div>
+
+<div class="card">
+<h3>Dipilih (<span id="count">0</span>/5)</h3>
+<ul class="selected" id="selectedList"></ul>
+<button class="next-btn" id="nextBtn" disabled onclick="goNext()">Seterusnya</button>
+</div>
+
+</div>
+</div>
+
+<script>
+const data=[
+{id:1,name:"Aisyah Ahmad",year:"Tahun 2",bio:"Peramah & sabar",img:"images/aisyah.jpg"},
+{id:2,name:"Muhammad Hakim",year:"Tahun 1",bio:"Suka bantu pelajar baru",img:"images/hakim.jpg"},
+{id:3,name:"Nurul Iman",year:"Tahun 3",bio:"Komunikasi baik",img:"images/nurul.jpg"},
+{id:4,name:"Syafiq",year:"Tahun 2",bio:"Tenang & bertanggungjawab",img:"images/syafiq.jpg"},
+{id:5,name:"Siti Mariam",year:"Tahun 1",bio:"Mudah mesra",img:"images/mariam.jpg"}
+];
+
+let selected=[];
+
+function render(){
+const box=document.getElementById("profiles");
+box.innerHTML="";
+data.forEach(p=>{
+box.innerHTML+=`
+<div class="profile">
+<img src="${p.img}">
+<div>
+<h3>${p.name}</h3>
+<p>${p.year} · ${p.bio}</p>
+</div>
+<button onclick="toggle(${p.id})">Pilih</button>
+</div>`;
+});
+}
+
+function toggle(id){
+if(selected.includes(id)){
+selected=selected.filter(x=>x!==id);
+}else{
+if(selected.length>=5){alert("Maksimum 5 orang");return;}
+selected.push(id);
+}
+update();
+}
+
+function update(){
+const ul=document.getElementById("selectedList");
+ul.innerHTML="";
+selected.forEach(id=>{
+const p=data.find(x=>x.id===id);
+ul.innerHTML+=`<li>${p.name}<button onclick="toggle(${id})">X</button></li>`;
+});
+document.getElementById("count").innerText=selected.length;
+document.getElementById("nextBtn").disabled=selected.length<3;
+localStorage.setItem("selected",JSON.stringify(selected));
+}
+
+function goNext(){
+window.location.href="next.html";
+}
+
+render();
+</script>
+
+</body>
+</html>
