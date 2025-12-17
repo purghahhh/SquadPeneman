@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <title>Pilih Pengiring IPG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===================== CSS ===================== -->
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f4f6fb;
+      color: #1f2937;
+    }
+
+    header {
+      background: white;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    header p {
+      margin-top: 6px;
+      color: #6b7280;
+      font-size: 0.95rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .controls input,
+    .controls select,
+    .controls button {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 0.9rem;
+    }
+
+    .controls button {
+      background: #e5e7eb;
+      cursor: pointer;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+
+    .profile {
+      display: flex;
+      gap: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: #eef2ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #3730a3;
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-info h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .profile-info p {
+      margin: 4px 0;
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .skills {
+      font-size: 0.8rem;
+      color: #374151;
+    }
+
+    .profile button {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #f3f4f6;
+    }
+
+    .selected-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 8px;
+    }
+
+    .selected-list button {
+      background: #fee2e2;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .confirm-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .confirm-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .note {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-top: 10px;
+    }
+
+    .result {
+      margin-top: 12px;
+      padding: 10px;
+      background: #ecfdf5;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #065f46;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Pilih Pengiring IPG</h1>
+  <p>Pilih 3–5 orang pelajar untuk menemani pelajar lain (jalan, naik bas, aktiviti).</p>
+</header>
+
+<div class="container">
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Cari nama / kemahiran">
+    <select id="yearFilter">
+      <option value="">Semua Tahun</option>
+      <option value="Tahun 1">Tahun 1</option>
+      <option value="Tahun 2">Tahun 2</option>
+      <option value="Tahun 3">Tahun 3</option>
+    </select>
+    <button onclick="resetFilter()">Reset</button>
+  </div>
+
+  <div class="layout">
+
+    <!-- PROFIL -->
+    <div class="card">
+      <h2>Profil Pelajar</h2>
+      <div id="profileList"></div>
+    </div>
+
+    <!-- PILIHAN -->
+    <div class="card">
+      <h2>Dipilih (<span id="count">0</span>/5)</h2>
+      <ul class="selected-list" id="selectedList"></ul>
+
+      <button class="confirm-btn" id="confirmBtn" disabled onclick="confirmPick()">
+        Confirm Pilihan
+      </button>
+
+      <p class="note">Minimum 3, maksimum 5 orang.</p>
+      <div id="result"></div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  Dibangunkan untuk kegunaan dalaman IPG · Versi demo (frontend sahaja)
+</footer>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+  const profiles = [
+    { id: 1, name: "Aisyah Ahmad", year: "Tahun 2", skills: "Kaunseling, naik bas", bio: "Peramah dan sabar." },
+    { id: 2, name: "Muhammad Hakim", year: "Tahun 1", skills: "Orientasi pelajar baru", bio: "Suka membantu." },
+    { id: 3, name: "Nurul Iman", year: "Tahun 3", skills: "Komunikasi, bahasa", bio: "Tenang dan jelas." },
+    { id: 4, name: "Syafiq", year: "Tahun 2", skills: "Keselamatan, penunjuk arah", bio: "Boleh dipercayai." },
+    { id: 5, name: "Siti Mariam", year: "Tahun 1", skills: "Motivasi, kaunseling", bio: "Mudah mesra." },
+    { id: 6, name: "Farhan", year: "Tahun 3", skills: "Pengurusan kumpulan", bio: "Berpengalaman aktiviti luar." }
+  ];
+
+  const selected = [];
+
+  function initials(name) {
+    return name.split(" ").map(w => w[0]).join("").toUpperCase();
+  }
+
+  function render(list) {
+    const container = document.getElementById("profileList");
+    container.innerHTML = "";
+
+    list.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "profile";
+      div.innerHTML = `
+        <div class="avatar">${initials(p.name)}</div>
+        <div class="profile-info">
+          <h3>${p.name}</h3>
+          <p>${p.year} · ${p.bio}</p>
+          <div class="skills">Kemahiran: ${p.skills}</div>
+        </div>
+        <button onclick="toggle(${p.id})">Pilih</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function toggle(id) {
+    const index = selected.indexOf(id);
+    if (index !== -1) {
+      selected.splice(index, 1);
+    } else {
+      if (selected.length >= 5) {
+        alert("Maksimum 5 orang sahaja.");
+        return;
+      }
+      selected.push(id);
+    }
+    updateSelected();
+  }
+
+  function updateSelected() {
+    const ul = document.getElementById("selectedList");
+    ul.innerHTML = "";
+    selected.forEach(id => {
+      const p = profiles.find(x => x.id === id);
+      const li = document.createElement("li");
+      li.innerHTML = `
+        ${p.name}
+        <button onclick="toggle(${id})">X</button>
+      `;
+      ul.appendChild(li);
+    });
+
+    document.getElementById("count").textContent = selected.length;
+    document.getElementById("confirmBtn").disabled = selected.length < 3;
+  }
+
+  function confirmPick() {
+    const names = selected.map(id => profiles.find(p => p.id === id).name);
+    document.getElementById("result").innerHTML =
+      "<strong>Pilihan dihantar:</strong><br>" + names.join("<br>");
+  }
+
+  function resetFilter() {
+    document.getElementById("search").value = "";
+    document.getElementById("yearFilter").value = "";
+    render(profiles);
+  }
+
+  document.getElementById("search").addEventListener("input", filter);
+  document.getElementById("yearFilter").addEventListener("change", filter);
+
+  function filter() {
+    const q = document.getElementById("search").value.toLowerCase();
+    const y = document.getElementById("yearFilter").value;
+    render(profiles.filter(p =>
+      (!q || p.name.toLowerCase().includes(q) || p.skills.toLowerCase().includes(q)) &&
+      (!y || p.year === y)
+    ));
+  }
+
+  render(profiles);
+</script>
+
+</body>
+</html>
